@@ -83,7 +83,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('ocean','assets/environment/background.png');
         this.load.image('mid','assets/environment/midground.png');
         this.load.image('mine','assets/enemies/mine.png');
-        this.load.image('rock','assets/enemies/crab.jpg');
+        this.load.image('rock','assets/enemies/mine-big.png');
         this.load.image('predator','assets/enemies/fish-big.png');
         this.load.image('cell','assets/player/fish_orange.png');
         this.load.image('hero','assets/player/fish_orange.png');
@@ -150,6 +150,8 @@ class GameScene extends Phaser.Scene {
 
         // Input
         this.cursors=this.input.keyboard.createCursorKeys();
+        this.aKey=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.dKey=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.spaceBar=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         // Collisions
@@ -168,7 +170,7 @@ class GameScene extends Phaser.Scene {
         let x=Phaser.Math.Between(50,750);
         let type=Phaser.Math.Between(0,100); let enemy;
         if(type<60) enemy=this.enemies.create(x,650,'mine');
-        else if(type<85) enemy=this.enemies.create(x,650,'rock').setScale(1.5);
+        else if(type<85) enemy=this.enemies.create(x,650,'rock').setScale(1.0);
         else enemy=this.enemies.create(x,650,'predator');
         let stageBoost=Math.floor(this.score/1000)*60;
         enemy.body.setVelocityY(-(350+stageBoost));
@@ -209,8 +211,8 @@ class GameScene extends Phaser.Scene {
         // Movement
         let speed=this.isHyperspeed?this.HYPER_SPEED:this.BASE_SPEED;
         this.player.setVelocityX(0);
-        if(this.cursors.left.isDown) this.player.setVelocityX(-speed);
-        if(this.cursors.right.isDown) this.player.setVelocityX(speed);
+        if(this.cursors.left.isDown || this.aKey.isDown) this.player.setVelocityX(-speed);
+        if(this.cursors.right.isDown || this.dKey.isDown) this.player.setVelocityX(speed);
 
         // Smooth fish lean
         let targetAngle=90+Phaser.Math.Clamp(this.player.body.velocity.x/10,-20,20);
