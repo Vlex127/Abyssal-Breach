@@ -9,7 +9,7 @@ class MenuScene extends Phaser.Scene {
 
         this.load.audio('select', 'assets/sounds/blipSelect.wav');
         this.load.audio('oceanAmbience', 'assets/sounds/ocean.wav');
-        this.load.audio('bubblesLoop', 'assets/sounds/bubbles.wav');
+        this.load.audio('bubblesLoop', 'assets/sounds/watery_cave_loop.ogg');
         this.load.audio('deepHum', 'assets/sounds/watery_cave.mp3');
     }
 
@@ -47,13 +47,22 @@ class MenuScene extends Phaser.Scene {
         let startBtn = this.add.text(400,500,"> INITIATE DESCENT <",{
             fontSize:'28px', fill:'#00ff00', backgroundColor:'#000',
             padding:{x:30,y:15}, fontFamily:'Courier New'
-        }).setOrigin(0.5).setInteractive({useHandCursor:true});
-        startBtn.on('pointerover', ()=>startBtn.setStyle({fill:'#ffff00'}));
-        startBtn.on('pointerout', ()=>startBtn.setStyle({fill:'#00ff00'}));
-        startBtn.on('pointerdown', ()=>{
-            this.sound.play('select');
+        }).setOrigin(0.5);
+
+        let startHit = this.add.rectangle(400,500,startBtn.width + 80,startBtn.height + 40,0x000000,0).setOrigin(0.5);
+        startHit.setInteractive({useHandCursor:true});
+        startBtn.setDepth(2);
+
+        const startGame = () => {
+            if (this.sound && this.sound.get('select')) this.sound.play('select');
             this.scene.start('GameScene');
-        });
+        };
+
+        startHit.on('pointerover', ()=>startBtn.setStyle({fill:'#ffff00'}));
+        startHit.on('pointerout', ()=>startBtn.setStyle({fill:'#00ff00'}));
+        startHit.on('pointerdown', startGame);
+
+        this.input.keyboard.once('keydown-ENTER', startGame);
 
         // Ambient audio
         if(!this.sound.get('oceanAmbience')) this.sound.add('oceanAmbience',{loop:true,volume:0.3}).play();
@@ -67,19 +76,23 @@ class GameScene extends Phaser.Scene {
     constructor() { super('GameScene'); }
 
     preload() {
+        this.load.on('loaderror', (file) => {
+            console.error('[Asset load error]', file && file.key, file && file.src);
+        });
+
         this.load.image('ocean','assets/environment/background.png');
         this.load.image('mid','assets/environment/midground.png');
         this.load.image('mine','assets/enemies/mine.png');
-        this.load.image('rock','assets/enemies/rock.png');
-        this.load.image('predator','assets/enemies/predator.png');
+        this.load.image('rock','assets/enemies/crab.jpg');
+        this.load.image('predator','assets/enemies/fish-big.png');
         this.load.image('cell','assets/player/fish_orange.png');
         this.load.image('hero','assets/player/fish_orange.png');
 
         this.load.audio('explosion','assets/sounds/explosion.wav');
         this.load.audio('sonar','assets/sounds/blipSelect.wav');
         this.load.audio('oceanAmbience','assets/sounds/ocean.wav');
-        this.load.audio('bubblesLoop','assets/sounds/bubbles.wav');
-        this.load.audio('deepHum','assets/sounds/deepHum.wav');
+        this.load.audio('bubblesLoop','assets/sounds/watery_cave_loop.ogg');
+        this.load.audio('deepHum','assets/sounds/watery_cave.mp3');
     }
 
     create() {
