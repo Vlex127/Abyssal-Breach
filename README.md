@@ -61,7 +61,7 @@ You can try opening `index.html` directly, but **audio/assets may fail to load**
 ## Credits
 
 - Created for **Daydream Campfire Lagos**
-- Game Developers: Vincent, Kofi, and Ayo
+- Game Developers: Vincent, Timilehin
 
 ## License
 
